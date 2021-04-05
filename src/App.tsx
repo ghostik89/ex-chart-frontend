@@ -1,18 +1,17 @@
 import React, {useEffect, useState} from 'react';
 import {useChart} from "./hooks/useChart";
-import {Layout, Skeleton, Typography} from "antd";
+import {Skeleton, Typography} from "antd";
 import {DateSlider} from "./components/DateSlider";
 import 'antd/dist/antd.css';
 import {ChartTable} from "./components/ChartTable";
 import {IdeChart} from "./components/IdeChart";
-import { add } from 'date-fns';
+import {add, format} from 'date-fns';
 import { DateProvider } from './context/DatesContext';
+import './App.css'
 
 function App() {
     const {chart, isError, isLoading} = useChart()
-    const [interval, setInterval] = useState({})
     const {Title, Paragraph} = Typography
-    const {Content} = Layout
     const [dates, setDates] = useState([])
     const [dateRange, setDateRange] = useState('quarter')
     const [fromDate, setFromDate] = useState(new Date())
@@ -53,13 +52,16 @@ function App() {
 
     return (
         <DateProvider value={{changeRangeType, dateRange, fromDate, changeStartDate, toDate}}>
-            <Title>Stats</Title>
-            <Paragraph>{isLoading? <Skeleton />: `From ${fromDate} to ${toDate}`}</Paragraph>
-            <DateSlider/>
-            <ChartTable/>
-            {['InteliJ IDEA', 'WebStorm', 'PhpStorm'].map((elem, index) => (
-                <IdeChart ideName={elem} key={index}/>
-            ))}
+            <div className="container">
+                <Title>Stats</Title>
+                <Paragraph>{isLoading? <Skeleton />: `From ${format(fromDate, 'MMM, dd yyyy')}
+                 to ${format(toDate, 'MMM, dd yyyy')}`}</Paragraph>
+                <DateSlider/>
+                <ChartTable/>
+                {['InteliJ IDEA', 'WebStorm', 'PhpStorm'].map((elem, index) => (
+                    <IdeChart ideName={elem} key={index}/>
+                ))}
+            </div>
         </DateProvider>
     );
 }
